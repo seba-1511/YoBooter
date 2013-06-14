@@ -1,0 +1,11 @@
+#   Prohibits the visualisation of the whole project
+Options -Indexes
+
+#   Activate the URL rewriting engine
+RewriteEngine on
+
+#   Every URL that do not correspond to this type are rewrote
+RewriteCond $1 !^(index\.php|assets/|robots\.txt)
+
+#   The others are redirected towards index.php
+RewriteRule ^(.*)$ index.php/$1 [L]

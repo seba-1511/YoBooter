@@ -1,0 +1,87 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+// -----------------------------------------------------------------------------
+
+class MY_CRUD extends CI_Model
+{
+    /**
+     *  Inserts a new line in the database
+     *  Note: param1: escaped values(safe), param2: non escaped (as is).
+     */
+    public function create($escapedOptions = array(), $nonEscapedOptions = array())
+    {
+        if(empty($escapedOptions) AND empty($nonEscapedOptions))
+        {
+            return false;
+        }
+
+        return (bool) $this->db->set($escapedOptions)
+        ->set($nonEscapedOptions, null, false)
+        ->insert($this->table);
+    }
+
+    /**
+     *  Reads datas in the database
+     */
+    public function read($select = '*', $where = array(), $nb = null, $start = null)
+    {
+        return $this->db->select($select)
+        ->from($this->table)
+        ->where($where)
+        ->limit($nb, $start)
+        ->get()
+        ->result();
+    }
+
+    /**
+     *  Modifies one or many entries in the database
+     */
+    public function update($where, $escapedOptions = array(), $nonEscapedOptions = array())
+    {       
+    //  Verificaiton of the update datas
+        if(empty($escapedOptions) AND empty($nonEscapedOptions))
+        {
+            return false;
+        }
+
+    //  In case where is not an array, we assume we are speaking of the entry's id
+        if(is_integer($where))
+        {
+            $where = array('id' => $where);
+        }
+
+        return (bool) $this->db->set($escapedOptions)
+        ->set($nonEscapedOptions, null, false)
+        ->where($where)
+        ->update($this->table);
+
+    }
+
+    /**
+     *  Deletes one or many entries in the database
+     */
+    public function delete($where)
+    {
+        // As in update, if where is not an array, it is the entry's id
+        if(is_integer($where))
+        {
+            $where = array('id' => $where);
+        }
+
+        return (bool) $this->db->where($where)
+        ->delete($this->table);
+    }
+
+    /**
+     *  Counts the number of results from the database
+     */
+    public function count($field=array(), $value=null)
+    {
+     return (int) $this->db->where($field, $value)
+     ->from($this->table)
+     ->count_all_results();
+ }
+}
+
+/* End of file MY_CRUD.php */
+/* Location: ./system/application/core/MY_CRUD.php */
